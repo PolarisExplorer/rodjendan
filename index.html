@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="sr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<title>Srećan rođendan, ljubavi 🤍</title>
+<style>
+  :root{
+    --bg:#080808;
+    --fg:#f7f4f1;
+    --muted:#bcb7b2;
+    --accent:#ff6f91;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--fg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:hidden;-webkit-text-size-adjust:100%}
+  html{height:-webkit-fill-available}
+  body{display:grid;place-items:center;min-height:100vh;min-height:100svh;min-height:-webkit-fill-available;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+  .screen{
+    position:fixed;inset:0;width:100%;height:100vh;height:100svh;display:grid;place-items:center;
+    opacity:0;pointer-events:none;
+    transition:opacity .65s ease;
+    padding:clamp(14px,4vw,28px);
+  }
+  .screen.active{opacity:1;pointer-events:auto}
+  .center{text-align:center;max-width:900px}
+  .big{
+    font-size:clamp(5rem,18vw,13rem);
+    line-height:.82;font-weight:900;letter-spacing:-.08em;margin:0;
+  }
+  .sub{
+    margin-top:26px;font-size:clamp(1rem,2.4vw,1.5rem);
+    color:var(--muted);letter-spacing:.02em
+  }
+  #s1 .big{transform:scale(.55);opacity:0}
+  #s1.active .big{animation:pop .9s cubic-bezier(.2,.9,.2,1) forwards}
+  #s1 .sub{transform:translateY(28px);opacity:0}
+  #s1.active .sub{animation:rise .8s .45s ease forwards}
+
+  @keyframes pop{to{transform:scale(1);opacity:1}}
+  @keyframes rise{to{transform:translateY(0);opacity:1}}
+
+  .type{
+    font-size:clamp(2.2rem,7vw,6rem);
+    font-weight:800;letter-spacing:-.045em;
+    min-height:1.25em
+  }
+  .caret{
+    display:inline-block;width:.08em;height:.9em;background:var(--accent);
+    vertical-align:-.08em;margin-left:.06em;animation:blink .8s steps(1) infinite
+  }
+  @keyframes blink{50%{opacity:0}}
+
+  .search-wrap{
+    width:min(720px,88vw);margin:34px auto 0;
+    height:64px;border:1px solid #343434;border-radius:999px;
+    display:flex;align-items:center;padding:0 24px;
+    overflow:hidden;transform:scaleX(.12);opacity:0;background:#101010
+  }
+  #s3.active .search-wrap{animation:expand .9s .25s cubic-bezier(.2,.8,.2,1) forwards}
+  @keyframes expand{to{transform:scaleX(1);opacity:1}}
+  .search-icon{font-size:1.35rem;margin-right:14px;opacity:.7}
+  #searchText{font-size:clamp(1rem,2.4vw,1.35rem);color:#e9e5e2;white-space:nowrap}
+
+  .heart{
+    font-size:clamp(4rem,12vw,8rem);
+    display:inline-block;filter:drop-shadow(0 0 28px rgba(255,111,145,.2));
+    animation:beat 1.25s ease-in-out infinite
+  }
+  @keyframes beat{0%,100%{transform:scale(1)}40%{transform:scale(1.12)}55%{transform:scale(.98)}}
+
+  .letter{
+    width:min(720px,94vw);max-height:80vh;max-height:80svh;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;
+    border:1px solid #242424;border-radius:28px;background:#0e0e0e;
+    padding:clamp(22px,5vw,52px);box-shadow:0 24px 80px rgba(0,0,0,.45);
+    text-align:left;
+  }
+  .letter h1{font-size:clamp(2.4rem,7vw,5.5rem);line-height:.9;letter-spacing:-.06em;margin:0 0 26px}
+  .letter p{font-size:clamp(1.02rem,4.2vw,1.22rem);line-height:1.72;color:#d7d2ce;margin:0 0 20px}
+  .letter .ending{color:var(--fg);font-weight:800;font-size:clamp(1.12rem,4.8vw,1.4rem)}
+  .pink{color:var(--accent)}
+  .btn{
+    border:0;border-radius:999px;background:var(--fg);color:#111;
+    padding:14px 22px;font-weight:800;font-size:1rem;cursor:pointer;
+    margin-top:22px;transition:transform .2s ease,opacity .2s ease
+  }
+  .btn:hover{transform:translateY(-2px)}
+  .hint{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;color:#777;font-size:.85rem;opacity:.8}
+  .floating-heart{
+    position:fixed;bottom:-40px;font-size:18px;pointer-events:none;
+    animation:floatUp linear forwards;opacity:.85
+  }
+  @keyframes floatUp{
+    to{transform:translateY(-115vh) rotate(18deg);opacity:0}
+  }
+
+  .final-wrap{
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+  }
+  .cake-scene{
+    position:relative;
+    width:min(360px,86vw);
+    height:315px;
+    margin:0 auto 4px;
+  }
+  .cake-glow{
+    position:absolute;left:50%;top:54%;
+    width:285px;height:285px;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(255,205,220,.24) 0 26%, rgba(255,111,145,.12) 48%, transparent 72%);
+    filter:blur(8px);
+    animation:glowPulse 2.8s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes glowPulse{
+    0%,100%{opacity:.55;transform:translate(-50%,-50%) scale(1)}
+    50%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}
+  }
+  .plate{
+    position:absolute;left:8%;right:8%;bottom:22px;height:18px;
+    border-radius:50%;
+    background:linear-gradient(180deg,#eee9e7,#8e8987 45%,#272525 50%,#111 100%);
+    box-shadow:0 24px 42px rgba(0,0,0,.58),0 0 28px rgba(255,111,145,.08);
+  }
+  .cake{
+    position:absolute;left:50%;top:12px;
+    width:min(330px,78vw);height:270px;
+    transform:translateX(-50%);
+    animation:cakeRise .9s cubic-bezier(.2,.9,.2,1) both;
+  }
+  @keyframes cakeRise{
+    0%{opacity:0;transform:translateX(-50%) translateY(30px) scale(.88)}
+    68%{opacity:1;transform:translateX(-50%) translateY(-4px) scale(1.015)}
+    100%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
+  }
+  .cake-base{
+    position:absolute;left:4%;right:4%;top:139px;height:96px;
+    border-radius:22px 22px 26px 26px;
+    background:linear-gradient(90deg,#e9b4c5 0%,#f5ced9 18%,#f9dbe3 50%,#efbfd0 82%,#dda2b7 100%);
+    box-shadow:inset 0 7px 0 rgba(255,255,255,.28),inset 0 -14px 22px rgba(117,54,76,.13),0 22px 50px rgba(255,111,145,.16);
+    z-index:1;
+  }
+  .cake-top{
+    position:absolute;left:14%;right:14%;top:80px;height:76px;
+    border-radius:22px 22px 18px 18px;
+    background:linear-gradient(90deg,#f4ced9 0%,#ffe8ee 28%,#fff2f5 52%,#f7d4df 78%,#e9b8c9 100%);
+    box-shadow:inset 0 6px 0 rgba(255,255,255,.48),0 10px 18px rgba(70,24,40,.08);
+    z-index:3;
+  }
+  .icing{
+    position:absolute;left:14%;right:14%;top:113px;height:43px;
+    background:#fff8fa;
+    border-radius:0 0 20px 20px;
+    clip-path:polygon(0 0,100% 0,100% 55%,92% 66%,86% 48%,78% 78%,69% 52%,60% 70%,50% 51%,40% 82%,30% 54%,20% 74%,11% 50%,0 66%);
+    box-shadow:0 7px 13px rgba(0,0,0,.06);
+    z-index:4;
+  }
+  .ribbon{
+    position:absolute;left:4%;right:4%;top:184px;height:7px;
+    background:linear-gradient(90deg,transparent,#fff6f9 13%,#ff8eab 32%,#fff6f9 50%,#ff8eab 68%,#fff6f9 87%,transparent);
+    opacity:.95;z-index:2;
+    box-shadow:0 1px 8px rgba(255,255,255,.18);
+  }
+  .sprinkles{position:absolute;inset:0;pointer-events:none;z-index:5}
+  .sp{position:absolute;width:7px;height:7px;border-radius:50%;background:#fff9fb;box-shadow:0 0 7px rgba(255,255,255,.38)}
+  .sp.s1{top:166px;left:17%}.sp.s2{top:207px;left:25%}.sp.s3{top:174px;left:38%}.sp.s4{top:215px;left:49%}
+  .sp.s5{top:166px;left:62%}.sp.s6{top:206px;left:72%}.sp.s7{top:174px;left:82%}.sp.s8{top:219px;left:87%}
+  .candle{
+    position:absolute;top:36px;width:9px;height:50px;border-radius:6px;
+    background:linear-gradient(90deg,#fff 0 38%,#f6b8ca 40% 62%,#fff 64% 100%);
+    box-shadow:0 4px 10px rgba(0,0,0,.14);z-index:7;
+  }
+  .candle.one{left:30%}.candle.two{left:43%}.candle.three{left:56%}.candle.four{left:69%}
+  .flame{
+    position:absolute;top:-19px;left:50%;transform:translateX(-50%);
+    width:12px;height:19px;border-radius:60% 45% 60% 45%;
+    background:radial-gradient(circle at 50% 70%,#fff8d7 0 18%,#ffd978 35% 58%,#ff9e58 76%);
+    box-shadow:0 0 14px rgba(255,217,120,.95),0 0 28px rgba(255,160,90,.35);
+    animation:flicker .72s ease-in-out infinite alternate;
+  }
+  @keyframes flicker{from{transform:translateX(-50%) rotate(-4deg) scale(.94)}to{transform:translateX(-50%) rotate(4deg) scale(1.08)}}
+  .cake-message{
+    position:absolute;left:50%;top:175px;z-index:6;
+    transform:translateX(-50%);
+    min-width:82px;padding:7px 15px 8px;
+    border:1px solid rgba(255,255,255,.68);
+    border-radius:999px;
+    background:rgba(255,247,250,.82);
+    color:#8e5266;font-size:.82rem;font-weight:900;
+    letter-spacing:.16em;text-transform:uppercase;
+    box-shadow:0 5px 15px rgba(98,44,62,.11);
+    backdrop-filter:blur(2px);
+  }
+  .cake::after{
+    content:"♡";
+    position:absolute;left:50%;top:5px;transform:translateX(-50%);
+    color:#ff8eab;font-size:31px;line-height:1;z-index:8;
+    text-shadow:0 0 18px rgba(255,111,145,.34);
+  }
+  .final-title{
+    font-size:clamp(2rem,7vw,4.8rem);
+    line-height:1;letter-spacing:-.055em;font-weight:900;
+    margin:0;
+  }
+  .final-sub{font-size:clamp(1.15rem,3vw,1.6rem);color:#f7f4f1;font-weight:700;margin-top:4px}
+
+  /* Poseban raspored poruke — tekst ostaje 1:1, mijenja se samo vizuelni prikaz */
+  .letter h1 .pink-word{color:var(--accent)}
+  .letter .life-paragraph{margin-bottom:22px}
+  .letter .life-line{
+    display:block;text-align:center;color:var(--fg);font-weight:900;
+    font-size:clamp(1.45rem,5.3vw,2.1rem);line-height:1.15;
+    margin:30px 0 32px;letter-spacing:-.035em
+  }
+  .letter .love-line{
+    text-align:center;color:var(--fg);font-weight:900;
+    font-size:clamp(1.35rem,5vw,1.9rem);line-height:1.2;
+    margin:34px 0 42px
+  }
+  .letter .lyric-line{
+    text-align:center;color:var(--fg);font-weight:900;
+    font-size:clamp(1.25rem,4.8vw,1.75rem);line-height:1.35;
+    margin:0 0 42px
+  }
+  .letter .lyric-line .pink-line{
+    display:block;color:var(--accent);margin-top:8px;
+    font-size:clamp(1.3rem,5.1vw,1.85rem);letter-spacing:-.02em
+  }
+  .letter .forever-line{
+    text-align:center;color:var(--fg);font-weight:900;
+    font-size:clamp(1.7rem,6vw,2.45rem);line-height:1.08;
+    letter-spacing:-.035em;margin:0 0 24px
+  }
+  @media (max-width:600px){
+    .letter .life-line{margin:26px 0 28px}
+    .letter .love-line{margin:30px 0 36px}
+    .letter .lyric-line{margin-bottom:36px}
+    .letter .forever-line{font-size:clamp(1.55rem,7vw,2rem)}
+  }
+
+  @media (max-width:600px){
+    .letter{border-radius:22px;max-height:84vh;max-height:84svh;padding:24px 20px calc(30px + env(safe-area-inset-bottom))}
+    .letter h1{font-size:clamp(2.25rem,12vw,3.4rem);line-height:.95;margin-bottom:24px}
+    .btn{width:100%;min-height:52px;padding:16px 20px;margin-top:14px;touch-action:manipulation}
+    .hint{font-size:.78rem;bottom:10px}
+  }
+
+
+  @media (max-width:600px){
+    .screen{padding-top:max(20px, calc(env(safe-area-inset-top) + 8px));padding-left:12px;padding-right:12px;padding-bottom:max(20px, calc(env(safe-area-inset-bottom) + 8px))}
+    .center{width:100%;padding:0 6px}
+    .search-wrap{width:92vw;height:58px;padding:0 18px}
+    #searchText{font-size:clamp(.92rem,4vw,1.12rem);white-space:normal;line-height:1.2}
+    .final-wrap{width:100%;max-height:100svh;overflow:hidden;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+    .cake-scene{height:285px;transform:scale(.9);transform-origin:center bottom;margin-top:-12px}
+    .final-title{font-size:clamp(2rem,10vw,3rem);padding:0 12px}
+  }
+
+  /* Fino podešavanje za velike, izdužene ekrane poput iPhone 17 Pro Max (440x956pt, Dynamic Island) */
+  @media (min-width:415px) and (max-width:500px) and (min-height:880px){
+    .screen{padding-top:max(34px, calc(env(safe-area-inset-top) + 14px))}
+    .letter{max-height:78vh;max-height:78svh}
+    .cake-scene{height:325px;transform:scale(1);margin-top:0}
+    .final-title{font-size:clamp(2.3rem,9vw,3.4rem)}
+    .hint{bottom:calc(16px + env(safe-area-inset-bottom))}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  }
+</style>
+</head>
+<body>
+
+<section class="screen active" id="s1">
+  <div class="center">
+    <h1 class="big" style="font-size:clamp(3.2rem,10vw,7.5rem)">Nikice,</h1>
+    <div class="sub" style="font-size:clamp(1.25rem,3vw,1.8rem)">danas nam je divan dan, divan dan... 🥹🤍</div>
+  </div>
+</section>
+
+<section class="screen" id="s2">
+  <div class="center">
+    <div class="sub" style="margin-bottom:18px">mojoj sreći je rođendan...</div>
+    <div class="type"><span id="typeName"></span><span class="caret"></span></div>
+  </div>
+</section>
+
+<section class="screen" id="s3">
+  <div class="center">
+    <div class="sub">da provjerimo nešto baš bitno...</div>
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <span id="searchText"></span><span class="caret"></span>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="s4">
+  <div class="center">
+    <div class="heart">🤍</div>
+    <div class="type" style="margin-top:20px">odgovor:</div>
+    <div class="sub" style="color:#f7f4f1;font-size:clamp(1.8rem,5vw,3rem);font-weight:800">moj Niki</div>
+  </div>
+</section>
+
+<section class="screen" id="s5">
+  <div class="letter">
+    <h1>Ti si moje <span class="pink-word">sve</span> 🤍</h1>
+
+    <p>Hvala ti za svako naše magično jutro.</p>
+
+    <p>Hvala ti za svaki dan koji si popravio samo time što si bio tu</p>
+
+    <p>Hvala ti za svako buđenje oko 6, kada se samo pribijem uz tvoje tijelo i na trenutak sve drugo prestane da postoji. Tada sam najsigurniji na svijetu. Najhrabriji, najzaštićeniji jer sam uz tebe i jer te osjetim</p>
+
+    <p>Hvala ti što me svakog jutra prvo dočekaju tvoje lijepe oči, a onda te slatke usne iza kojih se krije meni najljepši osmijeh na svijetu.</p>
+
+    <p>Hvala ti što me nekad budiš 10 puta da se ustanem</p>
+
+    <p>Hvala ti što si moj i što si mi se prepustio, što si mi otvorio svoje srce i dozvolio mi da upoznam baš tebe pravog tebe. Hvala ti što si i meni dozvolio da ja budem ja bez ikakvog foliranja i što sam ja ja prvi put u životu</p>
+
+    <p>Hvala ti što te mogu zagrliti iako te to nekad smara kad te grlim i ljubim 1000 puta dnevno ali svaki put se zhvalim Bogu i pomislim kako si moje sve što imam🤍</p>
+
+    <p>Nisam mislio da ću moći reci da sam srećan ali pored tebe sa ponosom to mogu reći jer to osjećam Niki</p>
+
+    <p>Kad se sjetim koliko smo toga prošli zajedno, srce mi bude puno i jako sam ponosan na nas. Naš stan u Novom Sadu i naš mali zajednički život. Prošli smo zajedno kroz moju operaciju, kroz strahove i teške trenutke. Upoznali smo roditelje. Radimo zajedno vikendom, dijelimo umor, obaveze, jutra, večeri i one sasvim obične trenutke koji su meni, upravo zato što su s tobom, postali posebni. Naš doručak za koji se u prosjeku odlučujemo po sat vremena, pa onda doručak za stolom i svako na svom telefonu. Pa razgovori sa Viki i sa Nenom… čovjece šta smo svašta prošli zajedno</p>
+
+    <p>I možda su to kad se sagleda samo neke stvari koje se normalno dešavaju u životu, ali meni su to mali trenuci našeg života i sreće koje ću pamtiti čitav život</p>
+
+    <p>Najviše od svega volim taj osjećaj da kroz život više ne idem sam. Da imam tebe pored sebe. Hvala ti što me vodiš za ruku baš onako kako ti każeš mladencima, “uzmi je za ruku  a ti idi par koraka ispred nje”</p>
+
+    <p>Volim ono što smo bili ali više volim ono što smo sada a najviše se radujem svemu onome što ćemo tek biti</p>
+
+    <p>Samo ostani tu, blizu mene</p>
+
+    <p class="life-paragraph">Da te u 6 ujutru ponovo pronađem pored sebe, privijem se uz tebe i barem na nekoliko minuta imam cijeli svoj svijet u rukama dok grad spava, dok nema obaveza, posla, telefona i da te zagrlim i gledam i da pomislim <span class="life-line">ovo je moj život</span></p>
+
+    <p>Jer tamo, uz tebe, osjećam da pripadam🤍</p>
+
+    <p class="love-line">Volim te živote moj 🤍</p>
+
+    <p class="lyric-line"><span>Ljubiti nije grijeh,</span> <span class="pink-line">LJUBIMO SE DO SVITANJA</span></p>
+
+    <p class="forever-line">DO SVITANJA ZAUVIJEK 🤍</p>
+
+    <button class="btn" id="toFinal" type="button">još samo nešto 🤍</button>
+  </div>
+</section>
+
+<section class="screen" id="s6">
+  <div class="final-wrap">
+    <div class="cake-scene">
+      <div class="cake-glow"></div>
+      <div class="plate"></div>
+      <div class="cake" aria-label="Rođendanska torta">
+        <div class="candle one"><span class="flame"></span></div>
+        <div class="candle two"><span class="flame"></span></div>
+        <div class="candle three"><span class="flame"></span></div>
+        <div class="candle four"><span class="flame"></span></div>
+        <div class="cake-top"></div>
+        <div class="icing"></div>
+        <div class="sprinkles">
+          <span class="sp s1"></span><span class="sp s2"></span><span class="sp s3"></span>
+          <span class="sp s4"></span><span class="sp s5"></span><span class="sp s6"></span>
+          <span class="sp s7"></span><span class="sp s8"></span>
+        </div>
+        <div class="cake-base"></div>
+        <div class="ribbon"></div>
+        <div class="cake-message">NIKI</div>
+      </div>
+    </div>
+    <h1 class="final-title">Srećan rođendan, Niki 🤍</h1>
+    <button class="btn" id="again" type="button">pogledaj ponovo</button>
+  </div>
+</section>
+
+<div class="hint" id="hint">klikni bilo gde da nastaviš</div>
+
+<script>
+  // PROMENI SAMO OVO:
+  const NJEGOVO_IME = "MOJ NIKI\nmoje sve";
+  // ----------------
+
+  const screens = [...document.querySelectorAll(".screen")];
+  const hint = document.getElementById("hint");
+  let index = 0;
+  let locked = true;
+
+  function show(i){
+    screens.forEach((s,k)=>s.classList.toggle("active", k===i));
+    index=i;
+    hint.style.display = i === screens.length-1 ? "none" : "block";
+  }
+
+  function typeInto(el, text, speed=90, done=()=>{}){
+    el.innerHTML="";
+    let i=0;
+    let out="";
+    const t=setInterval(()=>{
+      const ch = text[i++] ?? "";
+      out += ch;
+      el.innerHTML = out.replace(/\n/g, "<br>");
+      if(i>=text.length){clearInterval(t);done();}
+    },speed);
+  }
+
+  setTimeout(()=>{locked=false},1300);
+
+  function advance(){
+    if(locked || index===screens.length-1 || index===4) return;
+    locked=true;
+    const next=index+1;
+    show(next);
+
+    if(next===1){
+      typeInto(document.getElementById("typeName"), NJEGOVO_IME, 140, ()=>setTimeout(()=>locked=false,500));
+    } else if(next===2){
+      setTimeout(()=>{
+        typeInto(document.getElementById("searchText"), "ko je moja najveća ljubav? 🤨🤍", 75, ()=>setTimeout(()=>locked=false,500));
+      },900);
+    } else {
+      setTimeout(()=>locked=false,800);
+    }
+  }
+
+  // Radi pouzdano i na iPhone/Android browserima.
+  if (window.PointerEvent) {
+    document.body.addEventListener("pointerup", (e)=>{
+      if(e.target.closest("button") || e.target.closest(".letter")) return;
+      advance();
+    }, {passive:true});
+  } else {
+    document.body.addEventListener("touchend", (e)=>{
+      if(e.target.closest("button") || e.target.closest(".letter")) return;
+      advance();
+    }, {passive:true});
+    document.body.addEventListener("click", (e)=>{
+      if(e.target.closest("button") || e.target.closest(".letter")) return;
+      advance();
+    });
+  }
+
+
+  document.getElementById("toFinal").addEventListener("click",(e)=>{
+    e.stopPropagation();
+    if(locked) return;
+    locked=true;
+    show(5);
+    setTimeout(()=>locked=false,800);
+  });
+
+  document.getElementById("again").addEventListener("click",(e)=>{
+    e.stopPropagation();
+    document.getElementById("typeName").textContent="";
+    document.getElementById("searchText").textContent="";
+    show(0);
+    locked=true;
+    setTimeout(()=>locked=false,1300);
+  });
+
+  function spawnHeart(){
+    if(index < 3) return;
+    const h=document.createElement("div");
+    h.className="floating-heart";
+    h.textContent=Math.random()>.25?"♡":"♥";
+    h.style.left=(Math.random()*100)+"vw";
+    h.style.fontSize=(14+Math.random()*24)+"px";
+    h.style.animationDuration=(4+Math.random()*4)+"s";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),8500);
+  }
+  setInterval(spawnHeart,450);
+</script>
+</body>
+</html>
